@@ -52,6 +52,7 @@ class Login extends CI_Controller
 				'password' => $password
 			];
 
+			// Basic Auth
 			$username_api = 'admin';
 			$password_api = '12345678';
 
