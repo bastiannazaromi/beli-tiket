@@ -32,7 +32,7 @@
 								</tr>
 							</tbody>
 						</table>
-						<a href="#" class="btn btn-primary">Pesan Tiket</a>
+						<a href="<?= base_url('jadwal/detail/' . $dt->id); ?>" class="btn btn-primary">Pesan Tiket</a>
 					</div>
 				</div>
 			</div>
