@@ -2,7 +2,7 @@
 
 defined('BASEPATH') or exit('No direct script access allowed');
 
-class Jadwal extends CI_Controller
+class Order extends CI_Controller
 {
 	public function __construct()
 	{
@@ -16,61 +16,14 @@ class Jadwal extends CI_Controller
 
 	public function index()
 	{
-		$url = "http://localhost/nongtons/api/jadwal_tayang";
-
-		$username_api = 'admin';
-		$password_api = '12345678';
-
-		$query_data = [
-			'api_key' => 'nongtons-12345678'
-		];
-
-		$url_with_query = $url . '?' . http_build_query($query_data);
-
-		// Inisialisasi cURL
-		$ch = curl_init($url_with_query);
-
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_HTTPGET, true);
-		curl_setopt($ch, CURLOPT_USERPWD, "$username_api:$password_api");
-
-		$headers = [
-			'Accept: application/json',
-		];
-
-		curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-		$response = curl_exec($ch);
-
-		if (curl_errno($ch)) {
-			$this->session->set_flashdata('error', curl_error($ch));
-
-			redirect($_SERVER['HTTP_REFERER'], 'refresh');
-		}
-
-		curl_close($ch);
-
-		$response = json_decode($response);
-
-		$data = [
-			'title'  => 'Jadwal Film',
-			'page'   => 'jadwal',
-			'jadwal' => $response->data
-		];
-
-		$this->load->view('index', $data);
-	}
-
-	public function detail($id)
-	{
-		$url = "http://localhost/nongtons/api/jadwal_tayang/detail";
+		$url = "http://localhost/nongtons/api/order";
 
 		$username_api = 'admin';
 		$password_api = '12345678';
 
 		$query_data = [
 			'api_key' => 'nongtons-12345678',
-			'id'      => $id
+			'idUser'  => $this->session->userdata('user_login')['data']->id,
 		];
 
 		$url_with_query = $url . '?' . http_build_query($query_data);
@@ -101,28 +54,21 @@ class Jadwal extends CI_Controller
 		$response = json_decode($response);
 
 		$data = [
-			'title' => 'Detail Jadwal Film',
-			'page'  => 'jadwalDetail',
-			'film'  => $response->data
+			'title' => 'List Order Tiket',
+			'page'  => 'order',
+			'order' => $response->data
 		];
 
 		$this->load->view('index', $data);
 	}
 
-	public function order()
+	public function delete($id)
 	{
-		$idJadwal = $this->input->post('idJadwal');
-		$jumlah   = $this->input->post('jumlah');
-		$no_kursi = $this->input->post('no_kursi');
-
 		$url = "http://localhost/nongtons/api/order";
 
 		$data = [
-			'api_key'  => 'nongtons-12345678',
-			'idUser'   => $this->session->userdata('user_login')['data']->id,
-			'idJadwal' => $idJadwal,
-			'jumlah'   => $jumlah,
-			'no_kursi' => $no_kursi
+			'api_key' => 'nongtons-12345678',
+			'id'      => $id
 		];
 
 		// Basic Auth
@@ -133,7 +79,7 @@ class Jadwal extends CI_Controller
 		$ch = curl_init($url);
 
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_POST, true);
+		curl_setopt($ch, CURLOPT_CUSTOMREQUEST, 'DELETE');
 		curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data));
 		curl_setopt($ch, CURLOPT_USERPWD, "$username_api:$password_api");
 
@@ -156,16 +102,14 @@ class Jadwal extends CI_Controller
 
 		$response = json_decode($response);
 
-		if ($response->status == 'true') {
+		if ($response->status == true) {
 			$this->session->set_flashdata('success', $response->message);
-
-			redirect('order', 'refresh');
 		} else {
 			$this->session->set_flashdata('error', $response->message);
-
-			redirect($_SERVER['HTTP_REFERER'], 'refresh');
 		}
+
+		redirect($_SERVER['HTTP_REFERER'], 'refresh');
 	}
 }
 
-  /* End of file Jadwal.php */
+  /* End of file Order.php */
