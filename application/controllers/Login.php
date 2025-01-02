@@ -52,36 +52,7 @@ class Login extends CI_Controller
 				'password' => $password
 			];
 
-			// Basic Auth
-			$username_api = 'admin';
-			$password_api = '12345678';
-
-			// Inisialisasi cURL
-			$ch = curl_init($url);
-
-			curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-			curl_setopt($ch, CURLOPT_POST, true);          // Menggunakan metode POST
-			curl_setopt($ch, CURLOPT_POSTFIELDS, http_build_query($data)); // Kirim data
-			curl_setopt($ch, CURLOPT_USERPWD, "$username_api:$password_api"); // Basic Auth
-
-			$headers = [
-				'Content-Type: application/x-www-form-urlencoded', // Format data
-			];
-
-			curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
-			// Eksekusi permintaan cURL
-			$response = curl_exec($ch);
-
-			if (curl_errno($ch)) {
-				$this->session->set_flashdata('error', curl_error($ch));
-
-				redirect('login', 'refresh');
-			}
-
-			curl_close($ch);
-
-			$response = json_decode($response);
+			$response = api_post($url, $data);
 
 			if ($response->status == true && $response->message == 'Login berhasil') {
 				$login = [
