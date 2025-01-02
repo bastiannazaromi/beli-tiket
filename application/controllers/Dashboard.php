@@ -16,6 +16,8 @@ class Dashboard extends CI_Controller
 
 	public function index()
 	{
+		$a = 1;
+
 		$data = [
 			'title' => 'Dashboard',
 			'page'  => 'dashboard'
