@@ -44,6 +44,11 @@ class Jadwal extends CI_Controller
 
 		$response = api_get($url, $query_data);
 
+		// $response = api_get('http://localhost/nongtons/api/jadwal_tayang/detail', [
+		// 	'api_key' => 'nongtons-12345678',
+		// 	'id'      => $id
+		// ]);
+
 		$data = [
 			'title' => 'Detail Jadwal Film',
 			'page'  => 'jadwalDetail',
